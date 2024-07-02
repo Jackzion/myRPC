@@ -1,4 +1,10 @@
 package com.ziio.example.common.model;
+import lombok.Data;
+import java.io.Serializable;
 
-public class User {
+@Data
+public class User implements Serializable {
+
+    private String name;
+
 }
