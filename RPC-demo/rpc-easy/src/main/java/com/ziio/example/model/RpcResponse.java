@@ -2,11 +2,13 @@ package com.ziio.example.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * RPC 响应封装类
  */
 @Data
-public class RpcResponse {
+public class RpcResponse implements Serializable {
     /**
      * 响应数据
      */

@@ -19,6 +19,6 @@ public class EasyConsumerExample {
         UserServiceProxy userServiceProxy = new UserServiceProxy();
         User user = new User();
         user.setName("ziio");
-        userServiceProxy.getUser(user);
+        System.out.println(userServiceProxy.getUser(user).getName());
     }
 }

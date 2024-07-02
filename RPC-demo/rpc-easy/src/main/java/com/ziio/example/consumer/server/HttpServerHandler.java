@@ -24,7 +24,6 @@ public class HttpServerHandler implements Handler<HttpServerRequest> {
 
         // 记录日志
         System.out.println("Received request : " + request.method() + " " + request.uri());
-
         // 异步处理 http 请求
         request.bodyHandler(body -> {
             // 取出 body ， 反序列化
@@ -45,12 +44,16 @@ public class HttpServerHandler implements Handler<HttpServerRequest> {
                 return;
             }
 
-            // 选择调用的服务，通过反射获取类信息
-            Class<?> implClass = LocalRegistry.get(rpcRequest.getServiceName());
             try {
+                // 选择调用的服务，通过反射获取类信息
+                Class<?> implClass = LocalRegistry.get(rpcRequest.getServiceName());
                 // 通过反射获取方法 ， 并 invoke
                 Method method = implClass.getMethod(rpcRequest.getMethodName(),rpcRequest.getParameterTypes());
                 Object result = method.invoke(implClass.newInstance(),rpcRequest.getArgs());
+                // 封装 返回类
+                rpcResponse.setData(result);
+                rpcResponse.setDataType(method.getReturnType());
+                rpcResponse.setMessage("OK");
             } catch (Exception e) {
                 e.printStackTrace();
                 rpcResponse.setMessage(e.getMessage());
