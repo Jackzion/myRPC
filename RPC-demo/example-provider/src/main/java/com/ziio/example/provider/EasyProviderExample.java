@@ -1,5 +1,6 @@
 package com.ziio.example.provider;
 
+import com.ziio.example.RpcApplication;
 import com.ziio.example.common.model.User;
 import com.ziio.example.common.service.UserService;
 import com.ziio.example.consumer.exRpc.LocalRegistry;
@@ -13,6 +14,7 @@ public class EasyProviderExample {
 
         // 启动 web 服务
         HttpServer httpServer = new VertxHttpServer();
-        httpServer.doStart(8881);
+        // webservice 动态监听端口 , 这里使用默认
+        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
     }
 }

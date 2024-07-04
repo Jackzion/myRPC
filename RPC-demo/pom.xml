@@ -13,6 +13,8 @@
         <module>example-consumer</module>
         <module>example-provider</module>
         <module>rpc-easy</module>
+        <module>rpc-core</module>
+        <module>rpc-core</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>

@@ -10,7 +10,8 @@
     </parent>
 
     <groupId>org.ziio</groupId>
-    <artifactId>example-provider</artifactId>
+    <artifactId>rpc-core</artifactId>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -26,21 +27,29 @@
             <version>5.8.16</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.vertx/vertx-web -->
         <dependency>
-            <groupId>org.ziio</groupId>
-            <artifactId>example-common</artifactId>
-            <version>1.0.0</version>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>4.5.1</version>
         </dependency>
 
         <dependency>
-            <groupId>org.ziio</groupId>
-            <artifactId>rpc-core</artifactId>
-            <version>1.0.0</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
-
-
-
-
 </project>

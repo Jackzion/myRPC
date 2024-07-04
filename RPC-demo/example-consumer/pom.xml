@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>org.ziio</groupId>
-            <artifactId>rpc-easy</artifactId>
+            <artifactId>rpc-core</artifactId>
             <version>1.0.0</version>
         </dependency>
 
