@@ -7,5 +7,5 @@
 参考框架：[Apache Dubbo](https://cn.dubbo.apache.org/zh-cn/)
 
 ## 架构设计
-
+![My Image](../assets/1720062646739.png)
 
