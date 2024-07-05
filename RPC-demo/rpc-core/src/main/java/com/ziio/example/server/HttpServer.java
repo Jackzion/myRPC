@@ -1,4 +1,4 @@
-package com.ziio.example.consumer.server;
+package com.ziio.example.server;
 
 /**
  * http 服务器接口

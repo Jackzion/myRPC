@@ -1,7 +1,7 @@
-package com.ziio.example.consumer;
+package com.ziio.example;
 
-import com.ziio.example.consumer.server.HttpServer;
-import com.ziio.example.consumer.server.VertxHttpServer;
+import com.ziio.example.server.HttpServer;
+import com.ziio.example.server.VertxHttpServer;
 
 public class EasyProviderExample {
     public static void main(String[] args) {

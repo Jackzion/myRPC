@@ -1,4 +1,4 @@
-package com.ziio.example.consumer.serializer;
+package com.ziio.example.serializer;
 
 import java.io.IOException;
 

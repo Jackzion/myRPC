@@ -1,4 +1,4 @@
-package com.ziio.example.consumer.exRpc;
+package com.ziio.example.exRpc;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

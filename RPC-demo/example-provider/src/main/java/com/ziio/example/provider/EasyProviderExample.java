@@ -1,11 +1,10 @@
 package com.ziio.example.provider;
 
 import com.ziio.example.RpcApplication;
-import com.ziio.example.common.model.User;
 import com.ziio.example.common.service.UserService;
-import com.ziio.example.consumer.exRpc.LocalRegistry;
-import com.ziio.example.consumer.server.HttpServer;
-import com.ziio.example.consumer.server.VertxHttpServer;
+import com.ziio.example.exRpc.LocalRegistry;
+import com.ziio.example.server.HttpServer;
+import com.ziio.example.server.VertxHttpServer;
 
 public class EasyProviderExample {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.ziio.example.consumer.server;
+package com.ziio.example.server;
 
 import io.vertx.core.Vertx;
 

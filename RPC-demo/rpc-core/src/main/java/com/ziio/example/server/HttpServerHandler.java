@@ -1,8 +1,8 @@
-package com.ziio.example.consumer.server;
+package com.ziio.example.server;
 
-import com.ziio.example.consumer.exRpc.LocalRegistry;
-import com.ziio.example.consumer.serializer.JdkSerializer;
-import com.ziio.example.consumer.serializer.Serializer;
+import com.ziio.example.exRpc.LocalRegistry;
+import com.ziio.example.serializer.JdkSerializer;
+import com.ziio.example.serializer.Serializer;
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
 import io.vertx.core.Handler;
