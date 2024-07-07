@@ -18,7 +18,7 @@ public class EasyConsumerExample {
 //        System.out.println(userService.getUser(user).getName());
 
 //        // mock 代理
-        UserService userService = ServiceProxyFactory.getMockProxy(UserService.class);
+        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
         User user = new User();
         user.setName("ziio");
         System.out.println(userService.getUser(user));

@@ -2,6 +2,7 @@ package com.ziio.example.proxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import com.esotericsoftware.minlog.Log;
 import com.ziio.example.RpcApplication;
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
@@ -9,6 +10,7 @@ import com.ziio.example.serializer.JdkSerializer;
 import com.ziio.example.serializer.Serializer;
 import com.ziio.example.serializer.SerializerFactory;
 import javafx.application.Application;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -17,6 +19,7 @@ import java.lang.reflect.Method;
 /**
  * 动态代理 , InvocationHandler实现
  */
+@Slf4j
 public class ServiceProxy implements InvocationHandler {
 
     // proxy 动态代理对象每执行每个方法都会经过 invoke , 即userService 每个接口都会得到增强实现

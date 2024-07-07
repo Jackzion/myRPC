@@ -1,0 +1,4 @@
+jdk=com.ziio.example.serializer.JdkSerializer
+hessian=com.ziio.example.serializer.HessianSerializer
+json=com.ziio.example.serializer.JsonSerializer
+kryo=com.ziio.example.serializer.KryoSerializer

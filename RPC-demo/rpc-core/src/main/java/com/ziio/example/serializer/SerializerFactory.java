@@ -9,22 +9,24 @@ import java.util.Map;
 public class SerializerFactory {
 
     /**
-     * 序列化器映射，单例
+     * spi 加载 serializer 接口类信息
      */
-    private static final Map<String,Serializer> KEY_SERIALIZER_MAP = new HashMap<String,Serializer>(){{
-        put(SerializerKeys.JDK,new JdkSerializer());
-        put(SerializerKeys.JSON,new JsonSerivalizer());
-        put(SerializerKeys.KRYO,new KryoSerializer());
-        put(SerializerKeys.HESSIAN,new HessianSerializer());
+    static {
+        SpiLoader.load(Serializer.class);
     }
-    };
+
     /**
      * 默认序列化器
      */
-    private static final Serializer DEFAULT_SERIALIZER = KEY_SERIALIZER_MAP.get("jdk");
+    private static final Serializer DEFAULT_SERIALIZER = new JdkSerializer();
 
+    /**
+     * 从 spi 注册器获得 serializer 实例类型
+     * @param key
+     * @return
+     */
     public static Serializer getInstance(String key){
-        return KEY_SERIALIZER_MAP.get(key);
+        return SpiLoader.getInstance(Serializer.class,key);
     }
 
 

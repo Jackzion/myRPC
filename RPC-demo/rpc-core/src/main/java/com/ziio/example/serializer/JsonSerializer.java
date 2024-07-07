@@ -11,7 +11,7 @@ import java.io.IOException;
  * Json 序列化器 ， 大体积 ，但可读性好
  * 序列化会丢失类型信息！！！！！！
  */
-public class JsonSerivalizer implements Serializer {
+public class JsonSerializer implements Serializer {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     //  序列化
