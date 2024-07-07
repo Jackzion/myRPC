@@ -7,6 +7,7 @@ import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
 import com.ziio.example.serializer.JdkSerializer;
 import com.ziio.example.serializer.Serializer;
+import com.ziio.example.serializer.SerializerFactory;
 import javafx.application.Application;
 
 import java.io.IOException;
@@ -21,8 +22,8 @@ public class ServiceProxy implements InvocationHandler {
     // proxy 动态代理对象每执行每个方法都会经过 invoke , 即userService 每个接口都会得到增强实现
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // 序列化器
-        Serializer serializer = new JdkSerializer();
+        // 选择序列化器
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         //发请求
         RpcRequest rpcRequest = new RpcRequest();

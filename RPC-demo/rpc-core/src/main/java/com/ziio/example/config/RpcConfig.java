@@ -1,5 +1,6 @@
 package com.ziio.example.config;
 
+import com.ziio.example.serializer.SerializerKeys;
 import lombok.Data;
 
 /**
@@ -27,4 +28,8 @@ public class RpcConfig {
      * 模拟调用
      */
     private boolean mock =false;
+    /**
+     * 指定序列化器 --- JDK.DEFAULT
+     */
+    private String serializer = SerializerKeys.JDK;
 }
