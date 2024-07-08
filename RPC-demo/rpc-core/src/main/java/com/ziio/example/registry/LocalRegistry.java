@@ -1,4 +1,4 @@
-package com.ziio.example.exRpc;
+package com.ziio.example.registry;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,14 +1,19 @@
 package com.ziio.example;
 
+import com.ziio.example.config.RegistryConfig;
 import com.ziio.example.config.RpcConfig;
 import com.ziio.example.constant.RpcConstant;
+import com.ziio.example.registry.Registry;
+import com.ziio.example.registry.RegistryFactory;
 import com.ziio.example.utils.ConfigUtils;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 
+import javax.security.auth.login.AppConfigurationEntry;
+
 /**
- * RPC 框架应用
+ * RPC 框架应用 , 支持传入自定义配置
  * holder 存放全局变量。。双检索单例模式实现
  */
 @Slf4j
@@ -23,6 +28,11 @@ public class RpcApplication {
     public static void init(RpcConfig newRpcConfig) {
         rpcConfig = newRpcConfig;
         log.info("rpc init, config = {}", newRpcConfig.toString());
+        // 注册中心初始化
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
+        log.info("registry init , config = {}",registryConfig);
     }
 
 

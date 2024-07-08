@@ -1,8 +1,7 @@
 package com.ziio.example.server;
 
 import com.ziio.example.RpcApplication;
-import com.ziio.example.exRpc.LocalRegistry;
-import com.ziio.example.serializer.JdkSerializer;
+import com.ziio.example.registry.LocalRegistry;
 import com.ziio.example.serializer.Serializer;
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;

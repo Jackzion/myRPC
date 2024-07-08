@@ -1,11 +1,18 @@
 package com.ziio.example.proxy;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.esotericsoftware.minlog.Log;
 import com.ziio.example.RpcApplication;
+import com.ziio.example.config.RegistryConfig;
+import com.ziio.example.config.RpcConfig;
+import com.ziio.example.constant.RpcConstant;
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
+import com.ziio.example.model.ServiceMetaInfo;
+import com.ziio.example.registry.Registry;
+import com.ziio.example.registry.RegistryFactory;
 import com.ziio.example.serializer.JdkSerializer;
 import com.ziio.example.serializer.Serializer;
 import com.ziio.example.serializer.SerializerFactory;
@@ -15,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 动态代理 , InvocationHandler实现
@@ -39,10 +47,23 @@ public class ServiceProxy implements InvocationHandler {
             // 請求序列化
             byte[] bodyBytes = serializer.serialize(rpcRequest);
             byte[] result;
-            System.out.println();
-            System.out.println("http://localhost:" + RpcApplication.getRpcConfig().getServerPort());
+            // 从注册中心获取服务提供请求地址
+            RpcConfig rpcConfig = RpcApplication.getRpcConfig();
+            Registry registry = RegistryFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
+            registry.init(rpcConfig.getRegistryConfig());
+            ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
+            serviceMetaInfo.setServiceName(rpcRequest.getServiceName());
+            serviceMetaInfo.setServiceVersion(RpcConstant.DEFAULT_SERVICE_VERSION);
+            // 注册中心根据 serviceName and version 搜索服务
+            List<ServiceMetaInfo> serviceMetaInfos = registry.serviceDiscovery(serviceMetaInfo.getServiceKey());
+            if(CollUtil.isEmpty(serviceMetaInfos)){
+                throw new RuntimeException("暂无服务地址");
+            }
+            // todo: 取了第一个 ， 可负载均衡
+            ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfos.get(0);
+
             // 发送 http' 请求
-            try(HttpResponse httpResponse = HttpRequest.post("http://localhost:" + RpcApplication.getRpcConfig().getServerPort())
+            try(HttpResponse httpResponse = HttpRequest.post(selectedServiceMetaInfo.getServiceAddress())
                     .body(bodyBytes)
                     .execute())
             {

@@ -32,4 +32,9 @@ public class RpcConfig {
      * 指定序列化器 --- JDK.DEFAULT
      */
     private String serializer = SerializerKeys.JDK;
+
+    /**
+     * 指定注册中心
+     */
+    private RegistryConfig registryConfig = new RegistryConfig();
 }

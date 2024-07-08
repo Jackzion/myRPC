@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentMap;
 
 
 /**
- * 读取配置并加载实现类的方法
+ * 读取配置并加载实现类的方法，支持载入自定义配置 --- load
  */
 @Slf4j
 public class SpiLoader {
@@ -38,7 +38,7 @@ public class SpiLoader {
     /**
      * 用户自定义 SPI 目录
      */
-    private static final String RPC_CUSTOM_SPI_DIR = "META-INF/rpc/system/";
+    private static final String RPC_CUSTOM_SPI_DIR = "META-INF/rpc/custome/";
     /**
      * 扫描路径
      */
