@@ -21,11 +21,13 @@ public class EasyProviderExample {
         // 使用本地注册表注册服务
         LocalRegistry.register(UserService.class.getName(), UserServiceImpl.class);
 
-        // 注册服务到远程服务中心
+        // 获取服务中心
         RpcConfig rpcConfig = RpcApplication.getRpcConfig();
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
         Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
         registry.init(registryConfig);
+
+        // 注册服务
         ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
         serviceMetaInfo.setServiceName(serviceName);
         serviceMetaInfo.setServiceHost(rpcConfig.getServerHost());
@@ -39,5 +41,8 @@ public class EasyProviderExample {
         HttpServer httpServer = new VertxHttpServer();
         // webservice 动态监听端口 , 这里使用默认
         httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+
+        // 创建并注册 shutdown hook ， jvm 退出时执行操作
+        Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
     }
 }

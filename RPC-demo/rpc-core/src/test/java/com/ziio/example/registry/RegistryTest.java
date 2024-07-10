@@ -1,5 +1,6 @@
 package com.ziio.example.registry;
 
+import cn.hutool.cron.CronUtil;
 import com.ziio.example.config.RegistryConfig;
 import com.ziio.example.model.ServiceMetaInfo;
 import io.etcd.jetcd.ByteSequence;
@@ -102,5 +103,14 @@ public class RegistryTest {
 
         // delete the key
         kvclient.delete(key).get();
+    }
+
+    @Test
+    public void heartBeat() throws Exception{
+        // init 方法中执行心跳检测
+        register();
+
+        // 阻塞一分钟 看节点是否依然存在
+        Thread.sleep(60*1000L);
     }
 }
