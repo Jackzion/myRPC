@@ -11,7 +11,7 @@ public class RegistryConfig {
     private String registry = "etcd";
 
     /**
-     * 注册中心地址
+     * 注册中心地址 --- 默认为 2379(etcd) 可更 （2181）--- zookeeper
      */
     private String address = "http://localhost:2379";
 

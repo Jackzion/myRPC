@@ -198,12 +198,14 @@ public class EtcdRegistry implements Registry {
                             break;
                         // 新增加 key 时
                         case PUT:
+                            // 清理本地服务缓存
+                            registryServiceCache.clearCache();
                             break;
                         default:
                             break;
                     }
                 }
-            })
+            });
         }
     }
 }

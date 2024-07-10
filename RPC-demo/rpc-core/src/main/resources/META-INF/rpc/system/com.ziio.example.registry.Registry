@@ -1,1 +1,2 @@
 etcd=com.ziio.example.registry.EtcdRegistry
+zookeeper = com.ziio.example.registry.ZooKeeperRegistry
