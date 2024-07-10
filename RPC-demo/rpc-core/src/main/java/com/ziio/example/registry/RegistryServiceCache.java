@@ -2,6 +2,7 @@ package com.ziio.example.registry;
 
 import com.ziio.example.model.ServiceMetaInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegistryServiceCache {
@@ -17,4 +18,8 @@ public class RegistryServiceCache {
     List<ServiceMetaInfo> readCache(){
         return this.serviceCache;
     }
+    void clearCache(){
+        this.serviceCache.clear();
+    }
+
 }

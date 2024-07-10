@@ -1,6 +1,7 @@
 package com.ziio.example.registry;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
 import cn.hutool.json.JSONUtil;
@@ -10,6 +11,7 @@ import io.etcd.jetcd.*;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
+import io.etcd.jetcd.watch.WatchEvent;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -27,7 +29,15 @@ public class EtcdRegistry implements Registry {
      */
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
 
+    /**
+     * 本地服务缓存
+     */
     private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+
+    /**
+     * 正在监听的 key 集合
+     */
+    private final Set<String> watchingKeySet = new ConcurrentHashSet<>();
 
     private Client client ;
 
@@ -104,6 +114,9 @@ public class EtcdRegistry implements Registry {
             // 解析服务信息 , 将 list 转为 serviceMetaInfo
             List<ServiceMetaInfo> serviceList = keyValues.stream()
                     .map(keyValue -> {
+                        // 监听 key 变化
+                        String key = keyValue.getKey().toString(StandardCharsets.UTF_8);
+                        watch(key);
                         // 将值（all metaInfo）拿出来 , 转换为 list<serviceMetaInfo>
                         String value = keyValue.getValue().toString(StandardCharsets.UTF_8);
                         return JSONUtil.toBean(value, ServiceMetaInfo.class);
@@ -166,5 +179,31 @@ public class EtcdRegistry implements Registry {
         // 设置秒级任务
         CronUtil.setMatchSecond(true);
         CronUtil.start();
+    }
+
+    @Override
+    public void watch(String serviceNodeKey) {
+        Watch watchClient = client.getWatchClient();
+
+        // 之前未被监听，开启监听 ，监听只需要设置首次即可
+        boolean newWatch = watchingKeySet.add(serviceNodeKey);
+        if(newWatch){
+            watchClient.watch(ByteSequence.from(serviceNodeKey,StandardCharsets.UTF_8),response->{
+                for(WatchEvent event : response.getEvents()){
+                    switch (event.getEventType()){
+                        // key 被删除时
+                        case DELETE:
+                            // 清理本地服务缓存
+                            registryServiceCache.clearCache();
+                            break;
+                        // 新增加 key 时
+                        case PUT:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            })
+        }
     }
 }
