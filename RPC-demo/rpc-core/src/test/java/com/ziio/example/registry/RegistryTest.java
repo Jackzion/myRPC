@@ -113,4 +113,5 @@ public class RegistryTest {
         // 阻塞一分钟 看节点是否依然存在
         Thread.sleep(60*1000L);
     }
+
 }

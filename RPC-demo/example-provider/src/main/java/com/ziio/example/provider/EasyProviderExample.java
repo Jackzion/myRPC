@@ -10,6 +10,7 @@ import com.ziio.example.registry.Registry;
 import com.ziio.example.registry.RegistryFactory;
 import com.ziio.example.server.HttpServer;
 import com.ziio.example.server.VertxHttpServer;
+import com.ziio.example.server.VertxTcpServer;
 
 public class EasyProviderExample {
     public static void main(String[] args) {
@@ -37,10 +38,10 @@ public class EasyProviderExample {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        // 启动 web 服务
-        HttpServer httpServer = new VertxHttpServer();
+        // 启动 tcp 服务
+        VertxTcpServer tcpServer = new VertxTcpServer();
         // webservice 动态监听端口 , 这里使用默认
-        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+        tcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
 
         // 创建并注册 shutdown hook ， jvm 退出时执行操作
         Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
