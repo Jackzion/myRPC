@@ -8,9 +8,7 @@ import com.ziio.example.model.ServiceMetaInfo;
 import com.ziio.example.registry.LocalRegistry;
 import com.ziio.example.registry.Registry;
 import com.ziio.example.registry.RegistryFactory;
-import com.ziio.example.server.HttpServer;
-import com.ziio.example.server.VertxHttpServer;
-import com.ziio.example.server.VertxTcpServer;
+import com.ziio.example.server.tcp.VertxTcpServer;
 
 public class EasyProviderExample {
     public static void main(String[] args) {

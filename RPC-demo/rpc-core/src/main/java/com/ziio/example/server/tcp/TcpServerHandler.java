@@ -1,4 +1,4 @@
-package com.ziio.example.server;
+package com.ziio.example.server.tcp;
 
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
@@ -7,13 +7,12 @@ import com.ziio.example.protocol.ProtocolMessageDecoder;
 import com.ziio.example.protocol.ProtocolMessageEncoder;
 import com.ziio.example.protocol.ProtocolMessageTypeEnum;
 import com.ziio.example.registry.LocalRegistry;
+import com.ziio.example.server.tcp.TcpBufferHandlerWrapper;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.net.NetSocket;
 
-import java.beans.Encoder;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -24,7 +23,8 @@ public class TcpServerHandler implements Handler<NetSocket> {
     @Override
     public void handle(NetSocket socket) {
         // 处理连接
-        socket.handler(buffer -> {
+        // 利用 TcpBufferHandlerWrapper 进行封装 ，解决粘包半包问题
+        TcpBufferHandlerWrapper bufferHandlerWrapper = new TcpBufferHandlerWrapper (buffer -> {
             // 接受请求 ， 解码
             ProtocolMessage<RpcRequest> protocolMessage ;
             try {
