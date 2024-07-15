@@ -47,7 +47,7 @@ public class TcpServiceProxy implements InvocationHandler {
         if (CollUtil.isEmpty(serviceMetaInfos)) {
             throw new RuntimeException("暂无服务地址");
         }
-        // todo: 取了第一个 ， 可负载均衡
+        // todo: 取了第一个 ， tcp 不适合负载均衡？
         ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfos.get(0);
 
         // 发送请求，得到响应

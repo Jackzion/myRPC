@@ -1,0 +1,3 @@
+roundRobin=com.ziio.example.loadbalancer.RoundRobinLoadBalancer
+random=com.ziio.example.loadbalancer.RandomLoadBalancer
+consistentHash=com.ziio.example.loadbalancer.ConsistentHashLoadBalancer

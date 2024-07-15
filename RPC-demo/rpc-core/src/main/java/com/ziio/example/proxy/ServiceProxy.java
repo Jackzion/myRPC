@@ -8,6 +8,8 @@ import com.ziio.example.RpcApplication;
 import com.ziio.example.config.RegistryConfig;
 import com.ziio.example.config.RpcConfig;
 import com.ziio.example.constant.RpcConstant;
+import com.ziio.example.loadbalancer.LoadBalancer;
+import com.ziio.example.loadbalancer.LoadBalancerFactory;
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
 import com.ziio.example.model.ServiceMetaInfo;
@@ -22,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 动态代理 , InvocationHandler实现
@@ -59,8 +63,12 @@ public class ServiceProxy implements InvocationHandler {
             if(CollUtil.isEmpty(serviceMetaInfos)){
                 throw new RuntimeException("暂无服务地址");
             }
-            // todo: 取了第一个 ， 可负载均衡
-            ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfos.get(0);
+            //  负载均衡
+            LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
+            // 调用方法名作为负载均衡hashCode
+            Map<String,Object> requestParams = new HashMap<>();
+            requestParams.put("methodNam",rpcRequest.getMethodName());
+            ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfos);
 
             // 发送 http' 请求
             try(HttpResponse httpResponse = HttpRequest.post(selectedServiceMetaInfo.getServiceAddress())

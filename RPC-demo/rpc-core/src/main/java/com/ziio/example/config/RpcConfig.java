@@ -1,5 +1,6 @@
 package com.ziio.example.config;
 
+import com.ziio.example.loadbalancer.LoadBalancerKeys;
 import com.ziio.example.serializer.SerializerKeys;
 import lombok.Data;
 
@@ -37,4 +38,9 @@ public class RpcConfig {
      * 指定注册中心
      */
     private RegistryConfig registryConfig = new RegistryConfig();
+
+    /**
+     * 负载均衡器
+     */
+    private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
 }

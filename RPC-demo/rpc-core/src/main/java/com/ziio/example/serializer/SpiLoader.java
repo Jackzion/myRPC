@@ -59,7 +59,7 @@ public class SpiLoader {
     }
 
     /**
-     * 获得某个类型的实力 --- 单例复用
+     * 获得某个类型的实例 --- 单例复用
      * @param tClass
      * @param key
      * @return
