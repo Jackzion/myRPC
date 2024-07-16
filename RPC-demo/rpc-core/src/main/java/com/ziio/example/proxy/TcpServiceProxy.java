@@ -4,6 +4,10 @@ import cn.hutool.core.collection.CollUtil;
 import com.ziio.example.RpcApplication;
 import com.ziio.example.config.RpcConfig;
 import com.ziio.example.constant.RpcConstant;
+import com.ziio.example.fault.retry.RetryStrategy;
+import com.ziio.example.fault.retry.RetryStrategyFactory;
+import com.ziio.example.loadbalancer.LoadBalancer;
+import com.ziio.example.loadbalancer.LoadBalancerFactory;
 import com.ziio.example.model.RpcRequest;
 import com.ziio.example.model.RpcResponse;
 import com.ziio.example.model.ServiceMetaInfo;
@@ -14,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 动态代理 , InvocationHandler实现
@@ -47,11 +53,19 @@ public class TcpServiceProxy implements InvocationHandler {
         if (CollUtil.isEmpty(serviceMetaInfos)) {
             throw new RuntimeException("暂无服务地址");
         }
-        // todo: 取了第一个 ， tcp 不适合负载均衡？
-        ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfos.get(0);
+        // 负载均衡
+        LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
+        // 调用方法名作为负载均衡hashCode
+        Map<String,Object> requestParams = new HashMap<>();
+        requestParams.put("methodNam",rpcRequest.getMethodName());
+        ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfos);
 
+        // 使用重试机制
         // 发送请求，得到响应
-        RpcResponse rpcResponse = VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo);
+        RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+        RpcResponse rpcResponse = retryStrategy.doRetry(()->
+            VertxTcpClient.doRequest(rpcRequest,selectedServiceMetaInfo)
+        );
 
         // 返回调用结果
         return rpcResponse.getData();

@@ -70,7 +70,7 @@ public class ServiceProxy implements InvocationHandler {
             requestParams.put("methodNam",rpcRequest.getMethodName());
             ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfos);
 
-            // 发送 http' 请求
+            // 发送 http' 请求 , todo: http client？
             try(HttpResponse httpResponse = HttpRequest.post(selectedServiceMetaInfo.getServiceAddress())
                     .body(bodyBytes)
                     .execute())

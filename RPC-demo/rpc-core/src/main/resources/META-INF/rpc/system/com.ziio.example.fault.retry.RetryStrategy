@@ -1,0 +1,2 @@
+no = com.ziio.example.fault.retry.NoRetryStrategy
+fixedInterval = com.ziio.example.fault.retry.FixedIntervalRetryStrategy
