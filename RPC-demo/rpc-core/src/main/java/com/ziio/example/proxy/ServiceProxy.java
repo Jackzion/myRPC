@@ -8,6 +8,8 @@ import com.ziio.example.RpcApplication;
 import com.ziio.example.config.RegistryConfig;
 import com.ziio.example.config.RpcConfig;
 import com.ziio.example.constant.RpcConstant;
+import com.ziio.example.fault.tolerant.TolerantStrategy;
+import com.ziio.example.fault.tolerant.TolerantStrategyFactory;
 import com.ziio.example.loadbalancer.LoadBalancer;
 import com.ziio.example.loadbalancer.LoadBalancerFactory;
 import com.ziio.example.model.RpcRequest;
@@ -70,7 +72,7 @@ public class ServiceProxy implements InvocationHandler {
             requestParams.put("methodNam",rpcRequest.getMethodName());
             ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfos);
 
-            // 发送 http' 请求 , todo: http client？
+            // 发送 http' 请求 , todo: 重试机制
             try(HttpResponse httpResponse = HttpRequest.post(selectedServiceMetaInfo.getServiceAddress())
                     .body(bodyBytes)
                     .execute())
@@ -81,6 +83,9 @@ public class ServiceProxy implements InvocationHandler {
             RpcResponse rpcResponse = serializer.deserialize(result,RpcResponse.class);
             return  rpcResponse.getData();
         } catch (IOException e) {
+            // 触发容错机制
+            TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(RpcApplication.getRpcConfig().getTolerantStrategy());
+            tolerantStrategy.doTolerant(null,e);
             throw new RuntimeException(e);
         }
     }

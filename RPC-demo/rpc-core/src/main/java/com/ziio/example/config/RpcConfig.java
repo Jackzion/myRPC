@@ -1,6 +1,7 @@
 package com.ziio.example.config;
 
 import com.ziio.example.fault.retry.RetryStrategyKeys;
+import com.ziio.example.fault.tolerant.TolerantStrategyKeys;
 import com.ziio.example.loadbalancer.LoadBalancerKeys;
 import com.ziio.example.serializer.SerializerKeys;
 import lombok.Data;
@@ -49,4 +50,9 @@ public class RpcConfig {
      * 重试策略
      */
     private String retryStrategy = RetryStrategyKeys.NO;
+
+    /**
+     * 重试策略
+     */
+    private String tolerantStrategy = TolerantStrategyKeys.FAIL_FAST;
 }

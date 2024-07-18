@@ -1,0 +1,2 @@
+failBack = com.ziio.example.fault.tolerant.FailBackTolerantStrategy
+failFast = com.ziio.example.fault.tolerant.FailFastTolerantStrategy
