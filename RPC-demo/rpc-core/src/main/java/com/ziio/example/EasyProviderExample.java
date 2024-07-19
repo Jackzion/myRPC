@@ -3,7 +3,6 @@ package com.ziio.example;
 import com.ziio.example.server.HttpServer;
 import com.ziio.example.server.VertxHttpServer;
 import javafx.application.Application;
-
 public class EasyProviderExample {
     public static void main(String[] args) {
 

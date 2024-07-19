@@ -1,47 +1,30 @@
 package com.ziio.example.provider;
 
 import com.ziio.example.RpcApplication;
+import com.ziio.example.bootstrap.ProviderBootstrap;
 import com.ziio.example.common.service.UserService;
 import com.ziio.example.config.RegistryConfig;
 import com.ziio.example.config.RpcConfig;
 import com.ziio.example.model.ServiceMetaInfo;
+import com.ziio.example.model.ServiceRegisterInfo;
 import com.ziio.example.registry.LocalRegistry;
 import com.ziio.example.registry.Registry;
 import com.ziio.example.registry.RegistryFactory;
 import com.ziio.example.server.tcp.VertxTcpServer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EasyProviderExample {
     public static void main(String[] args) {
-        // rpc 框架初始化
-        RpcApplication.init();
 
-        // 注册服务
-        String serviceName = UserService.class.getName();
-        // 使用本地注册表注册服务
-        LocalRegistry.register(UserService.class.getName(), UserServiceImpl.class);
+        // 要注册的服务
+        List<ServiceRegisterInfo> serviceRegisterInfoList = new ArrayList<>();
+        ServiceRegisterInfo serviceRegisterInfo = new ServiceRegisterInfo(UserService.class.getName(), UserServiceImpl.class);
+        serviceRegisterInfoList.add(serviceRegisterInfo);
 
-        // 获取服务中心
-        RpcConfig rpcConfig = RpcApplication.getRpcConfig();
-        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
-        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
-        registry.init(registryConfig);
+        // 服务提供者初始化 --- 传入服务信息即可
+        ProviderBootstrap.init(serviceRegisterInfoList);
 
-        // 注册服务
-        ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
-        serviceMetaInfo.setServiceName(serviceName);
-        serviceMetaInfo.setServiceHost(rpcConfig.getServerHost());
-        serviceMetaInfo.setServicePort(rpcConfig.getServerPort());
-        try {
-            registry.register(serviceMetaInfo);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        // 启动 tcp 服务
-        VertxTcpServer tcpServer = new VertxTcpServer();
-        // webservice 动态监听端口 , 这里使用默认
-        tcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
-
-        // 创建并注册 shutdown hook ， jvm 退出时执行操作
-        Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
     }
 }

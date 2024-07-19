@@ -1,5 +1,5 @@
-import org.junit.jupiter.api.Test;
-
-class EtclClientTest {
-
-}
+//import org.junit.jupiter.api.Test;
+//
+//class EtclClientTest {
+//
+//}
