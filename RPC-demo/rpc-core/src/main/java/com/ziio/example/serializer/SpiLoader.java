@@ -20,11 +20,12 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * 读取配置并加载实现类的方法，支持载入自定义配置 --- load
+ * 开启 bufferReaderStream 手动读行加载
  */
 @Slf4j
 public class SpiLoader {
     /**
-     * 存储已加载的类：接口名 =>（key => 实现类）
+     * 存储已加载的类：接口名 =>（key(jdk,json,hessian...) => 实现类）
      */
     private static Map<String , Map<String,Class<?>>> loaderMap = new ConcurrentHashMap<>();
     /**
@@ -67,7 +68,7 @@ public class SpiLoader {
      */
     public static <T> T getInstance(Class<?> tClass, String  key) {
         String tClassName = tClass.getName();
-        // 得到实现该接口所有类型信息
+        // 得到实现该接口所有 key -- 类路径
         Map<String,Class<?>> keyClassMap = loaderMap.get(tClassName);
         if(keyClassMap == null){
             throw new RuntimeException(String.format("SpiLoader 未加载该接口 %s ",tClassName));
@@ -102,10 +103,12 @@ public class SpiLoader {
         Map<String,Class<?>> keyClassMap = new HashMap<>();
         // 扫描路径，用户自定义高于 system
         for(String scanDir : SCAN_DIRS){
+            // ResourceUtil.getResources能快速定位各个调用者的资源类路径
             List<URL> resources = ResourceUtil.getResources(scanDir + loadClass.getName());
             // 读取每个资源文件
             for(URL resource : resources){
                 try {
+                    // url.openStream() 返回 InputStream , 读取文件
                     InputStreamReader inputStreamReader = new InputStreamReader(resource.openStream());
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                     String line;
@@ -113,8 +116,8 @@ public class SpiLoader {
                     while ((line = bufferedReader.readLine())!=null){
                         String[] strArray = line.split("=");
                         if(strArray.length>1){
-                            String key = strArray[0];
-                            String className = strArray[1];
+                            String key = strArray[0];   // key（jdk ， json，hessian。。。）
+                            String className = strArray[1]; // 实现类路径
                             keyClassMap.put(key,Class.forName(className));
                         }
                     }

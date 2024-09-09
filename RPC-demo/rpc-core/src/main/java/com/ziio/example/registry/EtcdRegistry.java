@@ -29,10 +29,15 @@ public class EtcdRegistry implements Registry {
      */
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
 
-    /**
-     * 本地服务缓存
+    /*
+     * 本地服务缓存 (单服务缓存 ， 已废弃)
      */
-    private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+//    private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+
+    /**
+     * 注册中心服务缓存（支持多个服务键）
+     */
+    private final RegistryServiceMultiCache registryServiceMultiCache = new RegistryServiceMultiCache();
 
     /**
      * 正在监听的 key 集合
@@ -68,7 +73,7 @@ public class EtcdRegistry implements Registry {
 
         // 设置要存储的键值对
         String registerkey = ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey();
-        // key --- root + serviceName + version + host + port
+        // key --- root + serviceName + version + host + port -- 可前缀
         ByteSequence key = ByteSequence.from(registerkey, StandardCharsets.UTF_8);
         // value -- all info
         ByteSequence value = ByteSequence.from(JSONUtil.toJsonStr(serviceMetaInfo),StandardCharsets.UTF_8);
@@ -96,8 +101,7 @@ public class EtcdRegistry implements Registry {
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
 
         // 优先从缓存获取，没有再到 etcd 取获取
-        // 注意 ： 缓存不区分 key
-        List<ServiceMetaInfo> cachedServiceMetaInfoList = registryServiceCache.readCache();
+        List<ServiceMetaInfo> cachedServiceMetaInfoList = registryServiceMultiCache.readCache(serviceKey);
         if(cachedServiceMetaInfoList!=null){
             return cachedServiceMetaInfoList;
         }
@@ -122,7 +126,7 @@ public class EtcdRegistry implements Registry {
                         return JSONUtil.toBean(value, ServiceMetaInfo.class);
                     }).collect(Collectors.toList());
             // 写入服务缓存
-            registryServiceCache.writeCache(serviceList);
+            registryServiceMultiCache.writeCache(serviceKey,serviceList);
             return serviceList;
         }catch (Exception e){
             throw new RuntimeException("获取服务列表失败",e);
@@ -165,7 +169,7 @@ public class EtcdRegistry implements Registry {
                         if(CollUtil.isEmpty(kvs)){
                             continue;
                         }
-                        // 节点未过期 --- 重新注册节点
+                        // 节点未过期 --- 重新注册节点 , todo: 续期所有节点，这里只续期一个
                         KeyValue keyValue = kvs.get(0);
                         String value = keyValue.getValue().toString(StandardCharsets.UTF_8);
                         ServiceMetaInfo serviceMetaInfo = JSONUtil.toBean(value, ServiceMetaInfo.class);
@@ -194,12 +198,12 @@ public class EtcdRegistry implements Registry {
                         // key 被删除时
                         case DELETE:
                             // 清理本地服务缓存
-                            registryServiceCache.clearCache();
+                            registryServiceMultiCache.clearCache(serviceNodeKey);
                             break;
                         // 新增加 key 时
                         case PUT:
                             // 清理本地服务缓存
-                            registryServiceCache.clearCache();
+                            registryServiceMultiCache.clearCache(serviceNodeKey);
                             break;
                         default:
                             break;

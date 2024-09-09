@@ -1,5 +1,7 @@
 package com.ziio.example.proxy;
 
+import com.ziio.example.RpcApplication;
+
 import java.lang.reflect.Proxy;
 
 /**
@@ -14,6 +16,15 @@ public class ServiceProxyFactory {
      * @param <T>
      */
     public static  <T> T getProxy(Class<T> serviceClass){
+        // 判断 RPCApplication.isMock 来获取 MockProxy
+        if(RpcApplication.getRpcConfig().isMock()){
+            return (T) Proxy.newProxyInstance(
+                    serviceClass.getClassLoader(),
+                    new Class[]{serviceClass},
+                    new MockServiceProxy()
+            );
+        }
+
         // 根据类信息 获取 代理对象
         return (T) Proxy.newProxyInstance(
                 serviceClass.getClassLoader(),

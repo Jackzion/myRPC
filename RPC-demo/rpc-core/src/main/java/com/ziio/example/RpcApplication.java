@@ -8,7 +8,6 @@ import com.ziio.example.registry.RegistryFactory;
 import com.ziio.example.utils.ConfigUtils;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
 
 import javax.security.auth.login.AppConfigurationEntry;
 
@@ -30,10 +29,11 @@ public class RpcApplication {
         log.info("rpc init, config = {}", newRpcConfig.toString());
         // 注册中心初始化
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
-//        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
-//        registry.init(registryConfig);
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
         log.info("registry init , config = {}",registryConfig);
-
+        // 创建并注册 shutdownHook
+        Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
     }
 
 

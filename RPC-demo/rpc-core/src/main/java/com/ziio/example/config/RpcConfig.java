@@ -37,7 +37,7 @@ public class RpcConfig {
     private String serializer = SerializerKeys.JDK;
 
     /**
-     * 指定注册中心
+     * 指定注册中心 , 注意要有 rpc.registry 前缀
      */
     private RegistryConfig registryConfig = new RegistryConfig();
 

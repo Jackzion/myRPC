@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RegistryServiceCache {
     /**
-     * 服务缓存
+     * 服务缓存 , 为服务消费者提供缓存信息
      */
     List<ServiceMetaInfo> serviceCache;
 
