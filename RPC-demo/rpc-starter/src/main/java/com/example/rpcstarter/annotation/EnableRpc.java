@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Import({RpcInitBootstrap.class, RpcProviderBootstrap.class, RpcConsumerBootstrap.class})
 public @interface EnableRpc {
     /**
-     * 需要启动 server
+     * 需要启动 server , todo: @target 是否为 field？
      * @return
      */
     boolean needServer() default true;

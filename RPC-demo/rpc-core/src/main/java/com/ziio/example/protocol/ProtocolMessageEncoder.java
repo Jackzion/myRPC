@@ -3,7 +3,6 @@ package com.ziio.example.protocol;
 import com.ziio.example.serializer.Serializer;
 import com.ziio.example.serializer.SerializerFactory;
 import io.vertx.core.buffer.Buffer;
-import org.apache.catalina.Server;
 
 import java.io.IOException;
 
@@ -35,6 +34,7 @@ public class ProtocolMessageEncoder {
         Serializer serializer = SerializerFactory.getInstance(serializerEnum.getValue());
         byte[] bodyBytes = serializer.serialize(protocolMessage.getBody());
 
+        // 注意 13 开始分别是 消息长度 Int(4) 和 数据 (Bytes)
         // 写入 body 长度 和 数据
         buffer.appendInt(bodyBytes.length);
         buffer.appendBytes(bodyBytes);

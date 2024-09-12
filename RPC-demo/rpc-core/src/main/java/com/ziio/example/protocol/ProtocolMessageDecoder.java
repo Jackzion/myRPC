@@ -35,6 +35,7 @@ public class ProtocolMessageDecoder {
         header.setStatus(buffer.getByte(4));
         // long 占 8字节
         header.setRequestId(buffer.getLong(5));
+        // int 占 4字节
         header.setBodyLength(buffer.getInt(13));
 
         // 读取 17 开始 ---> body

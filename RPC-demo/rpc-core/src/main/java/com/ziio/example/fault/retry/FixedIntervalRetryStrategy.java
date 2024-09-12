@@ -22,10 +22,10 @@ public class FixedIntervalRetryStrategy implements RetryStrategy {
     @Override
     public RpcResponse doRetry(Callable<RpcResponse> callable) throws Exception {
         Retryer<RpcResponse> retryer  = RetryerBuilder.<RpcResponse>newBuilder()
-                .retryIfExceptionOfType(Exception.class) // 重试条件
+                .retryIfExceptionOfType(Exception.class) // 重试条件,出现 Exception 异常时重试
                 .withWaitStrategy(WaitStrategies.fixedWait(3L, TimeUnit.SECONDS)) // 重试间隔
                 .withStopStrategy(StopStrategies.stopAfterAttempt(3)) // 重试次数
-                .withRetryListener(new RetryListener() { // 监听重试任务
+                .withRetryListener(new RetryListener() { // 监听重试任务 , 额外任务
                     @Override
                     public <V> void onRetry(Attempt<V> attempt) {
                         log.info("重试次数 {}",attempt.getAttemptNumber());

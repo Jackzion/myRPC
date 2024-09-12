@@ -45,19 +45,20 @@ public class TcpServiceProxy implements InvocationHandler {
 
         // 从注册中心获取服务提供请求地址
         RpcConfig rpcConfig = RpcApplication.getRpcConfig();
+        // registry 作为 SPI 对象，在 new rpcApplication ，已经被注册到 map ，并且加载到 cache 中（单例）
         Registry registry = RegistryFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
-        registry.init(rpcConfig.getRegistryConfig());
+        // 构建 ServiceMetaInfo
         ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
         serviceMetaInfo.setServiceName(rpcRequest.getServiceName());
         serviceMetaInfo.setServiceVersion(RpcConstant.DEFAULT_SERVICE_VERSION);
-        // 注册中心根据 serviceName and version 搜索服务
+        // 注册中心根据 getServiceKey 搜索服务
         List<ServiceMetaInfo> serviceMetaInfos = registry.serviceDiscovery(serviceMetaInfo.getServiceKey());
         if (CollUtil.isEmpty(serviceMetaInfos)) {
             throw new RuntimeException("暂无服务地址");
         }
         // 负载均衡
         LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
-        // 调用方法名作为负载均衡hashCode
+        // 调用方法名作为负载均衡 hashCode
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("methodNam",rpcRequest.getMethodName());
         ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfos);
@@ -67,7 +68,7 @@ public class TcpServiceProxy implements InvocationHandler {
         RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
         RpcResponse rpcResponse = null;
         try {
-            // 使用重试机制
+            // 使用重试机制 , 对传入 callable 任务进行重试
             rpcResponse = retryStrategy.doRetry(()->
                 VertxTcpClient.doRequest(rpcRequest,selectedServiceMetaInfo)
             );

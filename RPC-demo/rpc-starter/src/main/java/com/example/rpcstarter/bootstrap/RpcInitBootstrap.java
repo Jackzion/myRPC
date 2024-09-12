@@ -16,7 +16,7 @@ import org.springframework.core.type.AnnotationMetadata;
 public class RpcInitBootstrap implements ImportBeanDefinitionRegistrar {
 
     /**
-     * spring 初始化时执行，初始化 rpc 框架
+     * register bean hook
      * @param importingClassMetadata
      * @param registry
      */

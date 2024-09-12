@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class VertxTcpClient {
 
     public static RpcResponse doRequest(RpcRequest rpcRequest , ServiceMetaInfo selectedServiceMetaInfo) throws ExecutionException, InterruptedException {
+        // 创建 vertx 客户端
         // 发送 Tcp 请求
         Vertx vertx = Vertx.vertx();
         NetClient netClient = vertx.createNetClient();
@@ -32,7 +33,7 @@ public class VertxTcpClient {
                         System.out.println("Connnected to Tcp server");
                         NetSocket socket = res.result();
                         // 发送数据
-                        // 构造消息
+                        // 构造 protocolMessage (tcp包)
                         ProtocolMessage<RpcRequest> protocolMessage = new ProtocolMessage<>();
                         // 构造请求头
                         com.ziio.example.protocol.ProtocolMessage.Header header = new ProtocolMessage.Header();
@@ -40,6 +41,7 @@ public class VertxTcpClient {
                         header.setVersion(ProtocolConstant.PROTOCOL_VERSION);
                         header.setSerializer((byte) ProtocolMessageSerializerEnum.getEnumByValue(RpcApplication.getRpcConfig().getSerializer()).getKey());
                         header.setType((byte) ProtocolMessageTypeEnum.REQUEST.getValue());
+                        // 生成全局请求 ID
                         header.setRequestId(IdUtil.getSnowflakeNextId());
                         protocolMessage.setHeader(header);
                         protocolMessage.setBody(rpcRequest);
@@ -62,6 +64,7 @@ public class VertxTcpClient {
                                 throw new RuntimeException("协议消息解码错误");
                             }
                         });
+                        socket.handler(bufferHandlerWrapper);
                     } else {
                         System.out.println("failed to connect to tcp server");
                     }

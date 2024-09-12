@@ -16,7 +16,7 @@ public class ProtocolMessage<T> {
     /**
      * 消息体
      */
-    private T body;
+    private T body; // T : rpcRequest or rpcResponse
 
     @Data
     public static class Header{
@@ -37,7 +37,7 @@ public class ProtocolMessage<T> {
          */
         private byte type;
         /**
-         * （响应）状态
+         * （响应）状态码
          */
         private byte status;
         /**

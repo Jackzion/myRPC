@@ -1,15 +1,19 @@
 package com.example.examplespringbootconsumer;
 
-import com.example.rpcstarter.annotation.EnableRpc;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
+
 @SpringBootTest
-@EnableRpc(needServer = false)
 class ExampleSpringbootConsumerApplicationTests {
 
+    @Resource
+    private ExampleServiceImpl exampleService;
+
     @Test
-    void contextLoads() {
+    void test1() {
+        exampleService.test();
     }
 
 }

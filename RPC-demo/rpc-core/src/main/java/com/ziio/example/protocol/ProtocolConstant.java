@@ -10,11 +10,11 @@ public interface ProtocolConstant {
      */
     int MESSAGE_HEADER_LENGTH = 17;
     /**
-     * 魔数
+     * 魔数 一字节
      */
     byte PROTOCOL_MAGIC = 0x1;
     /**
-     * 协议版本号
+     * 协议版本号 一字节
      */
     byte PROTOCOL_VERSION = 0x1;
 }

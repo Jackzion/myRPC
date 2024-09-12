@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class ZooKeeperRegistry implements Registry {
-
+    //通过 apache.curator 来操作 zookeeper
+    //参考文档 ： https://curator.apache.org/docs/getting-started
     private CuratorFramework client;
 
     private ServiceDiscovery<ServiceMetaInfo> serviceDiscovery;
@@ -34,10 +35,14 @@ public class ZooKeeperRegistry implements Registry {
      */
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
 
+//    /**
+//     * 注册中心服务缓存 (单服务缓存 ， 弃用)
+//     */
+//    private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
     /**
-     * 注册中心服务缓存
+     * 多服务缓存 k-v : serviceKey -> serviceMetaInfoList
      */
-    private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+    private final RegistryServiceMultiCache registryServiceMultiCache = new RegistryServiceMultiCache();
 
     /**
      * 正在监听的 key 集合
@@ -98,7 +103,7 @@ public class ZooKeeperRegistry implements Registry {
     @Override
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
         // 优先从本地缓存中获取
-        List<ServiceMetaInfo> cachedServiceList = registryServiceCache.readCache();
+        List<ServiceMetaInfo> cachedServiceList = registryServiceMultiCache.readCache(serviceKey);
         if(cachedServiceList!=null){
             return cachedServiceList;
         }
@@ -112,8 +117,8 @@ public class ZooKeeperRegistry implements Registry {
             List<ServiceMetaInfo> serviceList = serviceInstanceCollection.stream()
                     .map(ServiceInstance::getPayload)
                     .collect(Collectors.toList());
-            // 写入缓存
-            registryServiceCache.writeCache(serviceList);
+            // 更新缓存
+            registryServiceMultiCache.writeCache(serviceKey,serviceList);
             return serviceList;
 
         } catch (Exception e) {
@@ -153,8 +158,8 @@ public class ZooKeeperRegistry implements Registry {
             curatorCache.start();
             curatorCache.listenable().addListener(
                     CuratorCacheListener.builder()
-                            .forDeletes(childData -> registryServiceCache.clearCache())
-                            .forChanges(((oldNode,node)->registryServiceCache.clearCache()))
+                            .forDeletes(childData -> registryServiceMultiCache.clearCache(serviceNodeKey))
+                            .forChanges(((oldNode,node)->registryServiceMultiCache.clearCache(serviceNodeKey)))
                             .build()
             );
         }

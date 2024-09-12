@@ -1,15 +1,15 @@
-package com.example.examplespringbootconsumer;
+package com.example.rpcdemoprovider;
 
 import com.example.rpcstarter.annotation.EnableRpc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@EnableRpc(needServer = false)
-public class ExampleSpringbootConsumerApplication {
+@EnableRpc(needServer = true)
+public class RpcDemoProviderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ExampleSpringbootConsumerApplication.class, args);
+        SpringApplication.run(RpcDemoProviderApplication.class, args);
     }
 
 }

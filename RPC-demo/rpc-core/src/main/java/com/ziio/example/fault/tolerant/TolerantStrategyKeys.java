@@ -7,7 +7,7 @@ public interface TolerantStrategyKeys {
     /**
      * 故障恢复
      */
-    String FAIL_BACK = "failBack";
+    String FAIL_BACK = "failBack"; // todo: Mock , 执行本地方法 and 服务
 
     /**
      * 快速失败
@@ -17,7 +17,7 @@ public interface TolerantStrategyKeys {
     /**
      * 故障转移
      */
-    String FAIL_OVER = "failOver";
+    String FAIL_OVER = "failOver";  // todo: 选择其他节点发送请求
 
     /**
      * 静默处理

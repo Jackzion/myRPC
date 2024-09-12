@@ -200,7 +200,7 @@ public class EtcdRegistry implements Registry {
                             // 清理本地服务缓存
                             registryServiceMultiCache.clearCache(serviceNodeKey);
                             break;
-                        // 新增加 key 时
+                        // 更新 key 时
                         case PUT:
                             // 清理本地服务缓存
                             registryServiceMultiCache.clearCache(serviceNodeKey);

@@ -80,7 +80,7 @@ public class SpiLoader {
         Class<?> implClass = keyClassMap.get(key);
         String implClassName = implClass.getName();
         // 从实例缓存加载
-        if(!instanceCach.containsKey(key)){
+        if(!instanceCach.containsKey(implClassName)){
             try {
                 // 没有，新建实现类
                 instanceCach.put(implClassName,implClass.newInstance());

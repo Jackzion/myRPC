@@ -19,7 +19,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public class RpcProviderBootstrap implements BeanPostProcessor {
 
     /**
-     * bean 初始化后执行
+     * bean 实例化执行
      * @param bean
      * @param beanName
      * @return
@@ -34,10 +34,10 @@ public class RpcProviderBootstrap implements BeanPostProcessor {
 
         if(rpcService!=null){
             // 需要注册服务
-            // 获取服务基本信息
+            // 1. 获取服务基本信息
             Class<?> interfaceClass = rpcService.interfaceClass();
-            // 默认值处理
-            if(interfaceClass== Void.class){
+            // 默认值处理 , 不指定接口，默认选择 bean 实现的接口
+            if(interfaceClass== void.class){
                 // 获取 bean 接口信息 ，赋值
                 interfaceClass = beanClass.getInterfaces()[0];
             }
@@ -49,15 +49,15 @@ public class RpcProviderBootstrap implements BeanPostProcessor {
             // 获取服务中心
             RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
             Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
-            registry.init(registryConfig);
 
-            // 注册服务
+            // 2. 注册服务
             // 本地注册
             LocalRegistry.register(serviceName,beanClass);
 
-            // 注册中心
+            // 注册中心注册
             ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
             serviceMetaInfo.setServiceName(serviceName);
+            serviceMetaInfo.setServiceVersion(serviceVersion);
             serviceMetaInfo.setServiceHost(rpcConfig.getServerHost());
             serviceMetaInfo.setServicePort(rpcConfig.getServerPort());
             try {

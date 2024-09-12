@@ -2,6 +2,10 @@ package com.ziio.example.protocol;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 协议信息状态枚举
  */
@@ -21,6 +25,15 @@ public enum ProtocolMessageSerializerEnum {
     ProtocolMessageSerializerEnum(int key,String value){
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * 获取值列表
+     *
+     * @return
+     */
+    public static List<String> getValues() {
+        return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
     }
 
     /**
